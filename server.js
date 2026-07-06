@@ -1,12 +1,19 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const rateLimit = require("express-rate-limit");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Serve fake login page
 app.use(express.static("public"));
 // Honeypot login endpoint
+const limiter = rateLimit({
+	windowMs: 60 * 1000, // 1 minute ka window
+	max: 20, // is window mein max 20 requests per IP
+	message: "Too many attempts, try again later."
+});
+app.use("/login", limiter);
 app.post("/login", (req, res) => {
 const { username, password } = req.body;
 const log = `
