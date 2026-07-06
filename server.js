@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -15,7 +16,8 @@ const limiter = rateLimit({
 });
 app.use("/login", limiter);
 app.post("/login", (req, res) => {
-const { username, password } = req.body;
+const username = String(req.body.username || "").slice(0, 100);
+const password = String(req.body.password || "").slice(0, 100);
 const log = `
 TIME: ${new Date().toISOString()}
 USERNAME:${username}
@@ -33,6 +35,6 @@ res.send(`
 `);
 });
 const PORT = process.env.PORT || 3000;
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log(`Honeypot running at http://localhost:${PORT}`);
 });
