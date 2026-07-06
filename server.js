@@ -16,13 +16,16 @@ PASSWORD:${password}
 IP: ${req.ip}----------------------------------
 `;
 // Save attacker data
-fs.appendFileSync("attack_logs.txt", log);
+fs.appendFile("attack_logs.txt", log, (err) => {
+	if (err) console.error("Failed to write log:", err);
+});
 // Fake response (never allow login)
 res.send(`
 <h3>Invalid credentials</h3>
 <p>Please try again later.</p>
 `);
 });
+const PORT = process.env.PORT || 3000;
 app.listen(3000, () => {
-    console.log("Honeypot running at http://localhost:3000");
+    console.log(`Honeypot running at http://localhost:${PORT}`);
 });
